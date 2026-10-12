@@ -1,0 +1,614 @@
+
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kim Finance | Grab & Bajet</title>
+<style>
+:root {
+  --navy:#102747; --blue:#1765d1; --green:#11845b;
+  --red:#d94343; --orange:#f59e0b; --bg:#f3f6fb;
+  --card:#fff; --text:#172337; --muted:#718096;
+  --border:#e1e8f0; --purple:#7952c7;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;font-size:14px}
+button,input,select{font:inherit}
+button{cursor:pointer;border:0;border-radius:9px;padding:10px 14px;font-weight:700}
+button:focus-visible,input:focus-visible,select:focus-visible{
+  outline:2px solid var(--blue);outline-offset:2px}
+.app{max-width:1250px;margin:auto;padding:20px}
+.hero{background:linear-gradient(120deg,#102747,#1765d1);
+  color:white;padding:25px;border-radius:18px;margin-bottom:18px}
+.hero h1{margin:0 0 8px;font-size:27px}
+.hero p{margin:0;color:#dbeafe;line-height:1.6}
+.topline{display:flex;justify-content:space-between;gap:15px;align-items:center}
+.pill{background:#ffffff20;padding:8px 12px;border-radius:20px;font-size:12px}
+.tabs{display:flex;gap:8px;overflow-x:auto;margin-bottom:18px;padding-bottom:3px}
+.tab{background:#e5ebf4;color:#34445c;white-space:nowrap}
+.tab.active{background:var(--navy);color:white}
+.page{display:none}.page.active{display:block}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
+.card{background:var(--card);padding:17px;border-radius:14px;
+  border:1px solid var(--border);box-shadow:0 3px 12px #17233706;min-width:0}
+.kpi-label{color:var(--muted);font-size:12px;font-weight:700}
+.kpi-value{font-size:24px;font-weight:800;margin:9px 0 5px;overflow-wrap:anywhere}
+.kpi-note{font-size:12px;color:var(--muted)}
+.green{color:var(--green)}.red{color:var(--red)}.blue{color:var(--blue)}
+.orange{color:#b86b00}.purple{color:var(--purple)}
+.section{margin-top:17px}
+.section-title{font-size:18px;margin:0 0 13px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.panel{background:white;padding:18px;border:1px solid var(--border);border-radius:14px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.muted{color:var(--muted)}.small{font-size:12px}
+hr{border:0;border-top:1px solid var(--border);margin:14px 0}
+.bar{height:9px;background:#e8edf4;border-radius:20px;overflow:hidden;margin:10px 0}
+.bar>div{height:100%;background:var(--green);border-radius:20px;transition:width .2s}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field label{font-size:12px;font-weight:700;color:#526177}
+.field input,.field select{width:100%;min-width:0;padding:10px;
+  border:1px solid #d7dfeb;border-radius:8px;background:white;color:var(--text)}
+.formgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.primary{background:var(--blue);color:white}
+.secondary{background:#e8eef8;color:#243b5c}
+.danger{background:#ffeded;color:#b42323}
+.success{background:#e1f7ed;color:#087443}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}
+.tablewrap{overflow-x:auto;background:white;border:1px solid var(--border);border-radius:12px}
+table{width:100%;border-collapse:collapse;white-space:nowrap}
+th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--border)}
+th{background:#f0f4fa;color:#41516a;font-size:12px}
+td{font-size:13px}tbody tr:last-child td{border-bottom:0}
+tfoot td{font-weight:800;background:#f7f9fc}
+.empty{text-align:center;color:var(--muted);padding:24px}
+.badge{font-size:11px;font-weight:700;border-radius:20px;padding:5px 8px}
+.badge.good{background:#dcfce7;color:#166534}
+.badge.bad{background:#fee2e2;color:#991b1b}
+.badge.neutral{background:#e8eef8;color:#34445c}
+.note{background:#fff8e8;border:1px solid #f3dfad;padding:12px;
+  border-radius:10px;line-height:1.6;color:#775316}
+.greenbox{background:#e8f8f0;border:1px solid #c5ebd6;
+  padding:15px;border-radius:12px}
+.redbox{background:#fff0f0;border:1px solid #f2cece;
+  padding:15px;border-radius:12px}
+.footer{text-align:center;color:var(--muted);padding:24px 0 10px;font-size:12px}
+@media(max-width:900px){
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .three{grid-template-columns:1fr 1fr}
+ .formgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:560px){
+ .app{padding:11px}.hero{padding:19px}.hero h1{font-size:22px}
+ .topline{align-items:flex-start;flex-direction:column}
+ .grid{gap:9px}.card{padding:13px}.kpi-value{font-size:20px}
+ .two,.three{grid-template-columns:1fr}
+ .formgrid{grid-template-columns:1fr 1fr}
+ .section-title{font-size:16px}
+}
+@media print{
+ body{background:white}.app{max-width:none;padding:0}
+ .tabs,.actions,button,.no-print{display:none!important}
+ .page{display:none!important}#dashboard{display:block!important}
+ .card,.panel{box-shadow:none;break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="hero">
+  <div class="topline">
+    <div>
+      <h1>Kim Finance</h1>
+      <p>Dashboard kewangan peribadi & pendapatan Grab Driver</p>
+    </div>
+    <span class="pill">MATLAMAT: LEBIHAN RM2,000 / BULAN</span>
+  </div>
+</header>
+
+<nav class="tabs no-print">
+  <button class="tab active" data-page="dashboard">Dashboard</button>
+  <button class="tab" data-page="tracker">Tracker Grab</button>
+  <button class="tab" data-page="budget">Bajet bulanan</button>
+  <button class="tab" data-page="settings">Tetapan & eksport</button>
+</nav>
+
+<section class="page active" id="dashboard">
+  <div class="row" style="margin-bottom:12px">
+    <h2 class="section-title" style="margin:0">Ringkasan kewangan</h2>
+    <div class="field" style="width:155px">
+      <select id="dashMonth" aria-label="Pilih bulan analisis">
+        <option value="2026-10">Oktober 2026</option>
+        <option value="2026-11" selected>November 2026</option>
+      </select>
+    </div>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <div class="kpi-label">GAJI BERSIH</div>
+      <div class="kpi-value blue" id="kSalary">RM2,018.90</div>
+      <div class="kpi-note">Pendapatan kerja hakiki</div>
+    </div>
+    <div class="card">
+      <div class="kpi-label">GRAB KASAR</div>
+      <div class="kpi-value" id="kGross">RM0.00</div>
+      <div class="kpi-note">Bulan yang dipilih</div>
+    </div>
+    <div class="card">
+      <div class="kpi-label">KOS OPERASI GRAB</div>
+      <div class="kpi-value orange" id="kCosts">RM0.00</div>
+      <div class="kpi-note" id="kCostNote">RM45 setiap hari memandu</div>
+    </div>
+    <div class="card">
+      <div class="kpi-label">GRAB SELEPAS KOS</div>
+      <div class="kpi-value green" id="kNet">RM0.00</div>
+      <div class="kpi-note">Kasar tolak kos operasi anggaran</div>
+    </div>
+    <div class="card">
+      <div class="kpi-label">JUMLAH KOMITMEN</div>
+      <div class="kpi-value" id="kCommit">RM0.00</div>
+      <div class="kpi-note">Termasuk PayLater dan makan</div>
+    </div>
+    <div class="card">
+      <div class="kpi-label">LEBIHAN / KEKURANGAN</div>
+      <div class="kpi-value" id="kBalance">RM0.00</div>
+      <div class="kpi-note">Selepas gaji, Grab dan komitmen</div>
+    </div>
+    <div class="card">
+      <div class="kpi-label">TARGET GRAB KASAR</div>
+      <div class="kpi-value purple" id="kTarget">RM3,760.00</div>
+      <div class="kpi-note">Target campuran weekday & weekend</div>
+    </div>
+    <div class="card">
+      <div class="kpi-label">BAKI TARGET</div>
+      <div class="kpi-value" id="kRemaining">RM3,760.00</div>
+      <div class="kpi-note" id="kProgressNote">0% daripada sasaran</div>
+    </div>
+  </div>
+
+  <div class="section two">
+    <div class="panel">
+      <h3 class="section-title">Kemajuan target Grab</h3>
+      <div class="row"><span class="muted">Terkumpul</span><strong id="progressAmount">RM0.00</strong></div>
+      <div class="bar"><div id="progressBar" style="width:0%"></div></div>
+      <div class="row small"><span id="progressPercent">0%</span><span id="progressTarget">Sasaran RM3,760</span></div>
+      <hr>
+      <div class="row"><span>Hari memandu direkodkan</span><strong id="daysDriven">0 hari</strong></div>
+      <div class="row" style="margin-top:9px"><span>Purata kasar setiap hari</span><strong id="averageGross">RM0.00</strong></div>
+    </div>
+    <div class="panel">
+      <h3 class="section-title">Sasaran harian</h3>
+      <div class="row"><span>Weekday</span><strong>RM120</strong></div>
+      <div class="row" style="margin-top:9px"><span>Weekend</span><strong>RM200</strong></div>
+      <div class="row" style="margin-top:9px"><span>Kos operasi sehari</span><strong class="orange">RM45</strong></div>
+      <hr>
+      <div class="row"><span>Grab bersih jika capai RM120</span><strong class="green">RM75</strong></div>
+      <div class="row" style="margin-top:9px"><span>Grab bersih jika capai RM200</span><strong class="green">RM155</strong></div>
+      <p class="small muted">Kos ditolak sekali bagi setiap hari yang mempunyai rekod pendapatan, termasuk hari bernilai RM0 jika direkodkan.</p>
+    </div>
+  </div>
+  <div class="section note">
+    <strong>Nota kewangan:</strong> Angka lebihan ialah anggaran berdasarkan rekod yang dimasukkan.
+    Ia belum mengambil kira kos lain yang tidak disenaraikan, seperti parkir, kecemasan,
+    susut nilai kereta atau penyelenggaraan tambahan. Tabung roadtax dan insurans kereta
+    dikira sebagai peruntukan bulanan.
+  </div>
+</section>
+
+<section class="page" id="tracker">
+  <h2 class="section-title">Tracker pendapatan Grab</h2>
+  <div class="grid" style="margin-bottom:15px">
+    <div class="card"><div class="kpi-label">JUMLAH TERKUMPUL</div><div class="kpi-value blue" id="tTotal">RM0.00</div></div>
+    <div class="card"><div class="kpi-label">TARGET TARIKH DIREKOD</div><div class="kpi-value" id="tTarget">RM0.00</div></div>
+    <div class="card"><div class="kpi-label">BEZA DENGAN TARGET</div><div class="kpi-value" id="tDiff">RM0.00</div></div>
+    <div class="card"><div class="kpi-label">KOS OPERASI ANGGARAN</div><div class="kpi-value orange" id="tCost">RM0.00</div></div>
+  </div>
+
+  <div class="panel section">
+    <h3 class="section-title" id="formTitle">Tambah rekod Grab</h3>
+    <form id="grabForm">
+      <input type="hidden" id="editId">
+      <div class="formgrid">
+        <div class="field"><label for="grabDate">Tarikh</label><input type="date" id="grabDate" required></div>
+        <div class="field"><label for="grabAmount">Pendapatan kasar (RM)</label><input type="number" id="grabAmount" min="0" step="0.01" placeholder="Contoh: 120" required></div>
+        <div class="field"><label for="grabNote">Catatan (pilihan)</label><input id="grabNote" maxlength="120" placeholder="Contoh: hujan / cuti"></div>
+      </div>
+      <div class="actions">
+        <button class="primary" type="submit" id="saveGrab">Simpan rekod</button>
+        <button class="secondary" type="button" id="cancelEdit" hidden>Batal edit</button>
+      </div>
+    </form>
+    <p class="small muted">Sasaran ditentukan automatik mengikut hari: Isnin–Jumaat RM120, Sabtu–Ahad RM200. Masukkan RM0 jika tidak memandu pada hari tersebut.</p>
+  </div>
+
+  <div class="section row">
+    <h3 class="section-title" style="margin:0">Rekod harian</h3>
+    <div class="field" style="width:160px">
+      <label for="trackerMonth">Bulan rekod</label>
+      <select id="trackerMonth">
+        <option value="2026-10">Oktober 2026</option>
+        <option value="2026-11">November 2026</option>
+      </select>
+    </div>
+  </div>
+  <div class="tablewrap section">
+    <table>
+      <thead><tr><th>Tarikh</th><th>Hari</th><th>Target</th><th>Hasil</th><th>Beza</th><th>Anggaran kos</th><th>Catatan</th><th class="no-print">Tindakan</th></tr></thead>
+      <tbody id="grabRows"></tbody>
+      <tfoot id="grabFoot"></tfoot>
+    </table>
+  </div>
+  <div class="actions">
+    <button class="secondary" id="exportGrab">Eksport tracker CSV</button>
+    <button class="secondary" id="printPage">Cetak / simpan PDF</button>
+  </div>
+</section>
+
+<section class="page" id="budget">
+  <div class="row" style="margin-bottom:14px">
+    <h2 class="section-title" style="margin:0">Bajet bulanan</h2>
+    <div class="field" style="width:160px">
+      <label for="budgetMonth">Bulan bajet</label>
+      <select id="budgetMonth">
+        <option value="2026-10">Oktober 2026</option>
+        <option value="2026-11" selected>November 2026</option>
+      </select>
+    </div>
+  </div>
+  <div class="panel">
+    <h3 class="section-title">Edit komitmen bulanan</h3>
+    <p class="small muted">Ubah amaun jika bil berubah. Nilai disimpan secara automatik apabila anda menekan Simpan bajet.</p>
+    <form id="budgetForm">
+      <div class="formgrid" id="budgetFields"></div>
+      <div class="actions">
+        <button class="primary" type="submit">Simpan bajet</button>
+        <button class="secondary" type="button" id="resetBudget">Pulihkan nilai asal</button>
+      </div>
+    </form>
+  </div>
+  <div class="section two">
+    <div class="panel">
+      <h3 class="section-title">Pecahan PayLater</h3>
+      <div class="tablewrap"><table>
+        <thead><tr><th>PayLater</th><th>Jumlah</th></tr></thead>
+        <tbody id="paylaterRows"></tbody>
+        <tfoot id="paylaterFoot"></tfoot>
+      </table></div>
+    </div>
+    <div class="panel">
+      <h3 class="section-title">Ringkasan bajet</h3>
+      <div class="row"><span>Gaji bersih</span><strong id="bSalary">RM0.00</strong></div><hr>
+      <div class="row"><span>Jumlah komitmen</span><strong id="bCommit">RM0.00</strong></div><hr>
+      <div class="row"><span>Defisit sebelum Grab</span><strong id="bDeficit" class="red">RM0.00</strong></div><hr>
+      <div class="row"><span>Grab bersih direkodkan</span><strong id="bGrabNet" class="green">RM0.00</strong></div><hr>
+      <div class="row"><span>Baki anggaran</span><strong id="bBalance">RM0.00</strong></div>
+    </div>
+  </div>
+  <div class="section note">
+    Roadtax dan insurans kereta RM1,825.45 setahun diperuntukkan sebanyak RM152.12 sebulan.
+    Amaun tahunan sebenar kekal RM1,825.45; jumlah bulanan ialah tabung simpanan.
+  </div>
+</section>
+
+<section class="page" id="settings">
+  <h2 class="section-title">Tetapan & eksport data</h2>
+  <div class="panel">
+    <h3 class="section-title">Tetapan kewangan</h3>
+    <div class="formgrid">
+      <div class="field"><label for="salary">Gaji bersih bulanan (RM)</label><input id="salary" type="number" min="0" step=".01"></div>
+      <div class="field"><label for="targetSurplus">Lebihan yang diingini (RM)</label><input id="targetSurplus" type="number" min="0" step=".01"></div>
+      <div class="field"><label for="targetWeekday">Target weekday (RM)</label><input id="targetWeekday" type="number" min="0" step=".01"></div>
+      <div class="field"><label for="targetWeekend">Target weekend (RM)</label><input id="targetWeekend" type="number" min="0" step=".01"></div>
+      <div class="field"><label for="petrol">Petrol setiap hari memandu (RM)</label><input id="petrol" type="number" min="0" step=".01"></div>
+      <div class="field"><label for="insurance">Insurans Grab harian (RM)</label><input id="insurance" type="number" min="0" step=".01"></div>
+      <div class="field"><label for="toll">Tol setiap hari memandu (RM)</label><input id="toll" type="number" min="0" step=".01"></div>
+      <div class="field"><label for="annualCar">Roadtax + insurans kereta setahun (RM)</label><input id="annualCar" type="number" min="0" step=".01"></div>
+    </div>
+    <div class="actions"><button class="primary" id="saveSettings" type="button">Simpan tetapan</button></div>
+  </div>
+  <div class="section panel">
+    <h3 class="section-title">Pengurusan data</h3>
+    <p>Data disimpan dalam storan browser pada peranti ini. Ia tidak disegerakkan secara automatik ke telefon atau komputer lain.</p>
+    <div class="actions">
+      <button class="primary" id="exportAll">Eksport semua data CSV</button>
+      <button class="secondary" id="backup">Muat turun backup JSON</button>
+      <button class="secondary" id="importBtn">Import backup JSON</button>
+      <input type="file" id="importFile" accept=".json,application/json" hidden>
+      <button class="danger" id="clearData">Padam semua rekod Grab</button>
+    </div>
+  </div>
+  <div class="section note">
+    <strong>Perhatian:</strong> Eksport backup secara berkala. Jika browser dipadam atau data laman dibersihkan,
+    rekod setempat mungkin hilang. Import hanya fail backup JSON yang dipercayai.
+  </div>
+</section>
+<div class="footer">Kim Finance · Pengiraan anggaran untuk kegunaan peribadi · Semak angka sebelum membuat keputusan kewangan.</div>
+</div>
+
+<script>
+(function(){
+"use strict";
+const $ = id => document.getElementById(id);
+const fmt = n => new Intl.NumberFormat("ms-MY",{
+  style:"currency",currency:"MYR",minimumFractionDigits:2,maximumFractionDigits:2
+}).format(Number(n)||0);
+const num = v => Number(v)||0;
+const esc = s => String(s??"").replace(/[&<>"']/g,c=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+}[c]));
+const STORAGE_KEY = "kimFinanceGrabApp_v1";
+
+const defaultData = {
+ settings:{
+  salary:2018.90,targetSurplus:2000,targetWeekday:120,targetWeekend:200,
+  petrol:20,insurance:10,toll:15,annualCar:1825.45
+ },
+ budgets:{
+  "2026-10":{
+   emak:200,aia:255.88,cuckoo:55,digi:53,unifi:94.35,
+   petrolFixed:0,servis:50,ptptn:137.50,mara:350,makan:300,
+   car:0,roadtax:0,paylater:681.10
+  },
+  "2026-11":{
+   emak:200,aia:255.88,cuckoo:55,digi:53,unifi:94.35,
+   petrolFixed:0,servis:50,ptptn:137.50,mara:350,makan:300,
+   car:475,roadtax:152.12,paylater:399.75
+  }
+ },
+ paylater:{
+  "2026-10":{Grab:94.89,Boost:179.16,Shopee:79.24,TikTok:13.43,RYT:314.38},
+  "2026-11":{Grab:0,Boost:26.49,Shopee:79.55,TikTok:13.43,RYT:280.28}
+ },
+ records:[
+  ["2026-10-01",150.70],["2026-10-02",0],["2026-10-03",398.64],
+  ["2026-10-04",116.20],["2026-10-05",99.24],["2026-10-06",140.20],
+  ["2026-10-07",55.80],["2026-10-08",78],["2026-10-09",110.30],
+  ["2026-10-10",83.40],["2026-10-11",178.80]
+ ].map((r,i)=>({id:"seed-"+i,date:r[0],amount:r[1],note:""}))
+};
+
+function clone(o){return JSON.parse(JSON.stringify(o))}
+function load(){
+ try{
+  const saved=localStorage.getItem(STORAGE_KEY);
+  if(!saved)return clone(defaultData);
+  const parsed=JSON.parse(saved);
+  return {
+   ...clone(defaultData),...parsed,
+   settings:{...defaultData.settings,...(parsed.settings||{})},
+   budgets:{...defaultData.budgets,...(parsed.budgets||{})},
+   paylater:{...defaultData.paylater,...(parsed.paylater||{})},
+   records:Array.isArray(parsed.records)?parsed.records:clone(defaultData.records)
+  };
+ }catch(e){return clone(defaultData)}
+}
+let data=load();
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(data))}
+function monthOf(date){return String(date).slice(0,7)}
+function dateObj(s){return new Date(s+"T12:00:00")}
+function dayName(s){return ["Ahad","Isnin","Selasa","Rabu","Khamis","Jumaat","Sabtu"][dateObj(s).getDay()]}
+function dailyTarget(s){
+ const d=dateObj(s).getDay();
+ return (d===0||d===6)?num(data.settings.targetWeekend):num(data.settings.targetWeekday);
+}
+function opCost(){return num(data.settings.petrol)+num(data.settings.insurance)+num(data.settings.toll)}
+function recordsFor(m){return data.records.filter(r=>monthOf(r.date)===m).sort((a,b)=>a.date.localeCompare(b.date))}
+function sum(arr,fn){return arr.reduce((a,x)=>a+fn(x),0)}
+function grabStats(m){
+ const rows=recordsFor(m);
+ const gross=sum(rows,r=>num(r.amount));
+ const costs=rows.length*opCost();
+ const targets=sum(rows,r=>dailyTarget(r.date));
+ const net=gross-costs;
+ return {rows,gross,costs,targets,net,diff:gross-targets,remaining:Math.max(0,num(3760)-gross)};
+}
+function budgetTotal(m){
+ const b=data.budgets[m];
+ return Object.values(b).reduce((a,v)=>a+num(v),0);
+}
+function payTotal(m){return Object.values(data.paylater[m]||{}).reduce((a,v)=>a+num(v),0)}
+function setText(id,value){$(id).textContent=value}
+function balance(m){
+ const st=grabStats(m);
+ return num(data.settings.salary)+st.net-budgetTotal(m);
+}
+function monthlyGrossTarget(m){
+ // Sasaran asal: 18 weekday + 8 weekend, 26 hari memandu.
+ return num(data.settings.targetWeekday)*18+num(data.settings.targetWeekend)*8;
+}
+function renderDashboard(){
+ const m=$("dashMonth").value,st=grabStats(m),b=budgetTotal(m);
+ const target=monthlyGrossTarget(m);
+ const remaining=Math.max(0,target-st.gross);
+ setText("kSalary",fmt(data.settings.salary));
+ setText("kGross",fmt(st.gross));
+ setText("kCosts",fmt(st.costs));
+ setText("kCostNote",fmt(opCost())+" setiap hari direkod");
+ setText("kNet",fmt(st.net));
+ setText("kCommit",fmt(b));
+ setText("kBalance",fmt(balance(m)));
+ $("kBalance").className="kpi-value "+(balance(m)>=0?"green":"red");
+ setText("kTarget",fmt(target));
+ setText("kRemaining",fmt(remaining));
+ setText("kProgressNote",Math.min(100,target?st.gross/target*100:0).toFixed(1)+"% daripada sasaran");
+ setText("progressAmount",fmt(st.gross));
+ setText("progressPercent",Math.min(100,target?st.gross/target*100:0).toFixed(1)+"%");
+ setText("progressTarget","Sasaran "+fmt(target));
+ $("progressBar").style.width=Math.min(100,target?st.gross/target*100:0)+"%";
+ setText("daysDriven",st.rows.length+" hari");
+ setText("averageGross",fmt(st.rows.length?st.gross/st.rows.length:0));
+}
+function renderTracker(){
+ const m=$("trackerMonth").value,st=grabStats(m);
+ setText("tTotal",fmt(st.gross));setText("tTarget",fmt(st.targets));
+ setText("tDiff",(st.diff>=0?"+":"")+fmt(st.diff));
+ $("tDiff").className="kpi-value "+(st.diff>=0?"green":"red");
+ setText("tCost",fmt(st.costs));
+ const tbody=$("grabRows");
+ if(!st.rows.length){tbody.innerHTML='<tr><td colspan="8" class="empty">Belum ada rekod untuk bulan ini.</td></tr>'}
+ else tbody.innerHTML=st.rows.map(r=>{
+  const target=dailyTarget(r.date),diff=num(r.amount)-target;
+  return `<tr>
+   <td>${esc(r.date)}</td><td>${dayName(r.date)}</td>
+   <td>${fmt(target)}</td><td><strong>${fmt(r.amount)}</strong></td>
+   <td class="${diff>=0?'green':'red'}">${diff>=0?'+':''}${fmt(diff)}</td>
+   <td>${fmt(opCost())}</td><td>${esc(r.note)}</td>
+   <td class="no-print"><button class="secondary" data-edit="${esc(r.id)}">Edit</button>
+   <button class="danger" data-delete="${esc(r.id)}">Padam</button></td>
+  </tr>`;
+ }).join("");
+ $("grabFoot").innerHTML=st.rows.length?`<tr>
+  <td colspan="2">Jumlah</td><td>${fmt(st.targets)}</td><td>${fmt(st.gross)}</td>
+  <td class="${st.diff>=0?'green':'red'}">${st.diff>=0?'+':''}${fmt(st.diff)}</td>
+  <td>${fmt(st.costs)}</td><td colspan="2"></td></tr>`:"";
+ tbody.querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click",()=>editRecord(b.dataset.edit)));
+ tbody.querySelectorAll("[data-delete]").forEach(b=>b.addEventListener("click",()=>deleteRecord(b.dataset.delete)));
+}
+const budgetLabels={
+ emak:"Emak",aia:"AIA",cuckoo:"Cuckoo",digi:"Digi / CelcomDigi",
+ unifi:"Unifi",petrolFixed:"Petrol komitmen lain",servis:"Servis motor",
+ ptptn:"PTPTN",mara:"MARA",makan:"Makan",car:"Ansuran kereta",
+ roadtax:"Tabung roadtax + insurans",paylater:"Jumlah PayLater"
+};
+function renderBudget(){
+ const m=$("budgetMonth").value,b=data.budgets[m];
+ $("budgetFields").innerHTML=Object.entries(budgetLabels).map(([key,label])=>
+  `<div class="field"><label for="b-${key}">${label} (RM)</label>
+  <input type="number" id="b-${key}" data-budget="${key}" min="0" step=".01" value="${num(b[key])}"></div>`
+ ).join("");
+ $("paylaterRows").innerHTML=Object.entries(data.paylater[m]||{}).map(([name,amount])=>
+  `<tr><td>${esc(name)}</td><td>${fmt(amount)}</td></tr>`).join("");
+ $("paylaterFoot").innerHTML=`<tr><td>Jumlah PayLater</td><td>${fmt(payTotal(m))}</td></tr>`;
+ setText("bSalary",fmt(data.settings.salary));
+ setText("bCommit",fmt(budgetTotal(m)));
+ setText("bDeficit",fmt(budgetTotal(m)-num(data.settings.salary)));
+ setText("bGrabNet",fmt(grabStats(m).net));
+ setText("bBalance",fmt(balance(m)));
+ $("bBalance").className=balance(m)>=0?"green":"red";
+}
+function renderSettings(){
+ for(const key of Object.keys(data.settings)){
+  if($(key))$(key).value=data.settings[key];
+ }
+}
+function renderAll(){renderDashboard();renderTracker();renderBudget();renderSettings()}
+function resetGrabForm(){
+ $("editId").value="";$("grabForm").reset();$("formTitle").textContent="Tambah rekod Grab";
+ $("saveGrab").textContent="Simpan rekod";$("cancelEdit").hidden=true;
+}
+function editRecord(id){
+ const r=data.records.find(x=>x.id===id);if(!r)return;
+ $("editId").value=r.id;$("grabDate").value=r.date;
+ $("grabAmount").value=r.amount;$("grabNote").value=r.note||"";
+ $("formTitle").textContent="Edit rekod Grab";
+ $("saveGrab").textContent="Simpan perubahan";$("cancelEdit").hidden=false;
+ $("grabForm").scrollIntoView({behavior:"smooth",block:"center"});
+}
+function deleteRecord(id){
+ const r=data.records.find(x=>x.id===id);if(!r)return;
+ if(!confirm("Padam rekod "+r.date+"?"))return;
+ data.records=data.records.filter(x=>x.id!==id);save();renderAll();
+}
+$("grabForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ const date=$("grabDate").value,amount=Number($("grabAmount").value);
+ if(!date||!Number.isFinite(amount)||amount<0){alert("Sila masukkan tarikh dan amaun yang sah.");return}
+ const id=$("editId").value;
+ if(data.records.some(r=>r.date===date&&r.id!==id)){
+  if(!confirm("Rekod tarikh ini sudah wujud. Simpan satu lagi rekod untuk tarikh yang sama?"))return;
+ }
+ if(id){
+  const r=data.records.find(x=>x.id===id);
+  if(r){r.date=date;r.amount=amount;r.note=$("grabNote").value.trim()}
+ }else{
+  data.records.push({id:"r-"+Date.now()+"-"+Math.random().toString(36).slice(2,7),
+   date,amount,note:$("grabNote").value.trim()});
+ }
+ save();resetGrabForm();$("trackerMonth").value=monthOf(date);
+ $("dashMonth").value=monthOf(date);renderAll();
+});
+$("cancelEdit").addEventListener("click",resetGrabForm);
+$("trackerMonth").addEventListener("change",renderTracker);
+$("dashMonth").addEventListener("change",renderDashboard);
+$("budgetMonth").addEventListener("change",renderBudget);
+$("budgetForm").addEventListener("submit",e=>{
+ e.preventDefault();const m=$("budgetMonth").value;
+ document.querySelectorAll("[data-budget]").forEach(input=>{
+  data.budgets[m][input.dataset.budget]=Math.max(0,num(input.value));
+ });
+ // PayLater pecahan ialah sumber nilai; jumlah komitmen ikut amaun yang diedit.
+ save();renderAll();alert("Bajet berjaya disimpan.");
+});
+$("resetBudget").addEventListener("click",()=>{
+ if(!confirm("Pulihkan bajet bulan yang dipilih kepada nilai asal?"))return;
+ const m=$("budgetMonth").value;data.budgets[m]=clone(defaultData.budgets[m]);
+ save();renderAll();
+});
+$("saveSettings").addEventListener("click",()=>{
+ for(const key of Object.keys(data.settings)){
+  const el=$(key);if(el)data.settings[key]=Math.max(0,num(el.value));
+ }
+ save();renderAll();alert("Tetapan berjaya disimpan.");
+});
+function csvDownload(name,rows){
+ const csv=rows.map(row=>row.map(v=>{
+  const s=String(v??"");
+  return '"'+s.replace(/"/g,'""')+'"';
+ }).join(",")).join("\r\n");
+ const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8;"});
+ const url=URL.createObjectURL(blob),a=document.createElement("a");
+ a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();
+ URL.revokeObjectURL(url);
+}
+function grabCsvRows(m){
+ return [["Tarikh","Hari","Target RM","Hasil kasar RM","Beza RM","Kos operasi RM","Anggaran bersih RM","Catatan"],
+ ...recordsFor(m).map(r=>[r.date,dayName(r.date),dailyTarget(r.date),num(r.amount),
+ num(r.amount)-dailyTarget(r.date),opCost(),num(r.amount)-opCost(),r.note||""])];
+}
+$("exportGrab").addEventListener("click",()=>csvDownload("tracker-grab-"+$("trackerMonth").value+".csv",grabCsvRows($("trackerMonth").value)));
+$("exportAll").addEventListener("click",()=>{
+ const rows=[["Tarikh","Hari","Target RM","Hasil kasar RM","Beza RM","Kos RM","Bersih RM","Catatan"]];
+ data.records.slice().sort((a,b)=>a.date.localeCompare(b.date)).forEach(r=>
+ rows.push([r.date,dayName(r.date),dailyTarget(r.date),r.amount,r.amount-dailyTarget(r.date),opCost(),r.amount-opCost(),r.note||""]));
+ csvDownload("semua-rekod-grab.csv",rows);
+});
+$("printPage").addEventListener("click",()=>window.print());
+$("backup").addEventListener("click",()=>{
+ const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+ const url=URL.createObjectURL(blob),a=document.createElement("a");
+ a.href=url;a.download="backup-kim-finance.json";a.click();URL.revokeObjectURL(url);
+});
+$("importBtn").addEventListener("click",()=>$("importFile").click());
+$("importFile").addEventListener("change",async e=>{
+ const file=e.target.files[0];if(!file)return;
+ try{
+  const imported=JSON.parse(await file.text());
+  if(!imported.settings||!imported.budgets||!Array.isArray(imported.records))throw new Error("Format tidak sah");
+  if(!confirm("Import akan menggantikan data semasa. Teruskan?"))return;
+  data={
+   ...clone(defaultData),...imported,
+   settings:{...defaultData.settings,...imported.settings},
+   budgets:{...defaultData.budgets,...imported.budgets},
+   paylater:{...defaultData.paylater,...(imported.paylater||{})},
+   records:imported.records
+  };
+  save();renderAll();alert("Backup berjaya diimport.");
+ }catch(err){alert("Gagal import. Pastikan fail backup JSON daripada aplikasi ini.")}
+ e.target.value="";
+});
+$("clearData").addEventListener("click",()=>{
+ if(!confirm("Padam SEMUA rekod Grab? Bajet dan tetapan tidak akan dipadam."))return;
+ data.records=[];save();renderAll();
+});
+document.querySelectorAll(".tab").forEach(btn=>btn.addEventListener("click",()=>{
+ document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b===btn));
+ document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===btn.dataset.page));
+}));
+renderAll();
+})();
+</script>
+</body>
+</html>
